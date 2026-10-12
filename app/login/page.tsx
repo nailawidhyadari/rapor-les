@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useApp } from "@/components/Provider";
+import { AKUN_DEMO, MODE_DEMO } from "@/lib/demo";
 
 export default function Login() {
   const { login, user, db } = useApp();
@@ -62,6 +63,25 @@ export default function Login() {
     await masuk(setup.username, setup.password);
   }
 
+  const [pakaiForm, setPakaiForm] = useState(false);
+  useEffect(() => {
+    setPakaiForm(new URLSearchParams(window.location.search).get("akun") === "sendiri");
+  }, []);
+
+  async function masukDemo(a: (typeof AKUN_DEMO)[number]) {
+    setErr("");
+    setSibuk(true);
+    try {
+      const r = await fetch("/api/demo", { method: "POST" });
+      if (!r.ok) throw new Error((await r.json().catch(() => ({}))).galat ?? "Gagal menyiapkan demo.");
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : "Gagal menyiapkan demo.");
+      setSibuk(false);
+      return;
+    }
+    await masuk(a.username, a.password);
+  }
+
   const brand = (
     <div className="brand" style={{ padding: "0 0 18px" }}>
       <div className="brand-mark" style={{ background: "var(--primary)", color: "var(--primary-ink)" }} aria-hidden="true">
@@ -91,6 +111,39 @@ export default function Login() {
               <button className="btn primary" style={{ width: "100%", minHeight: 44 }} disabled={sibuk}>{sibuk ? "Memproses..." : "Buat akun admin"}</button>
             </div>
           </form>
+        </div>
+      </div>
+    );
+  }
+
+  if (MODE_DEMO && !pakaiForm) {
+    return (
+      <div className="login-wrap">
+        <div className="login-box">
+          {brand}
+          <div className="panel">
+            <h1>Coba versi demo</h1>
+            <p className="muted small" style={{ marginBottom: 16 }}>Pilih peran untuk masuk. Data yang tampil adalah data contoh.</p>
+            <div className="stack-y">
+              {AKUN_DEMO.map((a) => (
+                <div key={a.username} style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)", padding: 14 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
+                    <strong>{a.peran}</strong>
+                    <span className="small muted">{a.deskripsi}</span>
+                  </div>
+                  <dl style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "2px 12px", margin: "10px 0 12px", fontSize: 14 }}>
+                    <dt className="muted">Nama pengguna</dt><dd style={{ margin: 0, fontFamily: "ui-monospace, Menlo, monospace" }}>{a.username}</dd>
+                    <dt className="muted">Kata sandi</dt><dd style={{ margin: 0, fontFamily: "ui-monospace, Menlo, monospace" }}>{a.password}</dd>
+                  </dl>
+                  <button className="btn primary" style={{ width: "100%", minHeight: 42 }} disabled={sibuk} onClick={() => masukDemo(a)}>
+                    {sibuk ? "Memproses..." : `Masuk sebagai ${a.peran}`}
+                  </button>
+                </div>
+              ))}
+              {err && <p className="err" role="alert">{err}</p>}
+            </div>
+          </div>
+          <p style={{ marginTop: 16, textAlign: "center" }} className="small"><Link href="/">Kembali ke beranda</Link></p>
         </div>
       </div>
     );
