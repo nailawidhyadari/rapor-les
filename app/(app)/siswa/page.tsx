@@ -34,7 +34,7 @@ export default function HalamanSiswa() {
       const idSaya = new Set(kelasSaya.map((k) => k.id));
       const kelasIds = isAdmin
         ? edit.kelasIds
-        : [...(lama?.kelasIds ?? []).filter((id) => !idSaya.has(id)), ...edit.kelasIds];
+        : [...(lama?.kelasIds ?? []).filter((id) => !idSaya.has(id)), ...edit.kelasIds.filter((id) => idSaya.has(id))];
       const baru = { ...edit, kelasIds, id: edit.id || uid("s"), nama: edit.nama.trim() };
       return { ...d, siswa: ada ? d.siswa.map((s) => (s.id === baru.id ? baru : s)) : [...d.siswa, baru] };
     });
@@ -87,7 +87,7 @@ export default function HalamanSiswa() {
                   <tr key={s.id}>
                     <td className="nm nm-cell">{s.nama}<span className="sub">{s.jenjang}</span></td>
                     <td data-label="Sekolah">{s.sekolah || "-"}</td>
-                    <td data-label="Kelas">{s.kelasIds.length ? s.kelasIds.map((id) => namaKelas(db, id)).join(", ") : "-"}</td>
+                    <td data-label="Kelas">{s.kelasIds.map((id) => namaKelas(db, id)).filter((n) => n !== "-").join(", ") || "-"}</td>
                     <td data-label="Orang tua"><span>{s.namaOrtu || "-"}<span className="sub">{s.waOrtu}</span></span></td>
                     <td data-label="Status"><span className={`badge ${s.aktif ? "ok" : ""}`}>{s.aktif ? "Aktif" : "Nonaktif"}</span></td>
                     <td className="aksi">

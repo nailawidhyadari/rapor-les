@@ -67,7 +67,7 @@ export default function HalamanRekap() {
                 <tbody>
                   {rs.map(({ s, h, rata, predikat }) => (
                     <tr key={s.id}>
-                      <td className="nm nm-cell">{s.nama}<span className="sub">{s.kelasIds.map((i) => namaKelas(db, i)).join(", ")}</span></td>
+                      <td className="nm nm-cell">{s.nama}<span className="sub">{s.kelasIds.map((i) => namaKelas(db, i)).filter((n) => n !== "-").join(", ")}</span></td>
                       <td data-label="Pertemuan" className="num">{h.total}</td>
                       <td data-label="Hadir" className="num">{h.H}</td>
                       <td data-label="Izin" className="num">{h.I}</td>
