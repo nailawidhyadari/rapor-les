@@ -32,9 +32,9 @@ export default function HalamanSiswa() {
       const lama = d.siswa.find((s) => s.id === edit.id);
       // tutor hanya mengubah kelas miliknya; keanggotaan kelas lain dipertahankan
       const idSaya = new Set(kelasSaya.map((k) => k.id));
-      const kelasIds = isAdmin
+      const kelasIds = Array.from(new Set(isAdmin
         ? edit.kelasIds
-        : [...(lama?.kelasIds ?? []).filter((id) => !idSaya.has(id)), ...edit.kelasIds.filter((id) => idSaya.has(id))];
+        : [...(lama?.kelasIds ?? []).filter((id) => !idSaya.has(id)), ...edit.kelasIds.filter((id) => idSaya.has(id))]));
       const baru = { ...edit, kelasIds, id: edit.id || uid("s"), nama: edit.nama.trim() };
       return { ...d, siswa: ada ? d.siswa.map((s) => (s.id === baru.id ? baru : s)) : [...d.siswa, baru] };
     });
