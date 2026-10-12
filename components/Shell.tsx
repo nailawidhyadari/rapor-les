@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useApp } from "./Provider";
-import { Icon } from "./ui";
+import { Avatar, Icon } from "./ui";
 
 const MENU = [
   { href: "/dashboard", label: "Ringkasan", icon: "home", grup: "Utama" },
@@ -69,8 +69,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           ))}
         </nav>
         <div className="side-foot">
-          <div className="who">{user.nama}</div>
-          <div className="role">{isAdmin ? "Administrator" : "Tutor"}</div>
+          <div className="row">
+            <Avatar nama={user.nama} />
+            <div>
+              <div className="who-n">{user.nama}</div>
+              <div className="role">{isAdmin ? "Administrator" : "Tutor"}</div>
+            </div>
+          </div>
           <button className="btn sm" onClick={async () => { await logout(); router.replace("/login"); }}>
             <Icon name="logout" />Keluar
           </button>
@@ -83,7 +88,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             <button className="btn sm" onClick={tutupGalat}>Tutup</button>
           </div>
         )}
-        {children}
+        <div key={path} className="halaman">{children}</div>
       </main>
     </div>
   );

@@ -5,6 +5,7 @@ import {
 } from "react";
 import type { Database, Kelas, Lembaga, Siswa, User } from "@/lib/types";
 import { dataKosong } from "@/lib/seed";
+import { Kerangka } from "./ui";
 import { adaKonfigurasi, ambilSemua, dariBaris, getSupabase, keBaris, keEmail } from "@/lib/supabase";
 
 interface Ctx {
@@ -222,6 +223,6 @@ export default function Provider({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-  if (!ready) return <div className="login-wrap"><p className="muted">Memuat data...</p></div>;
+  if (!ready) return <div className="main" style={{ margin: "0 auto" }}><Kerangka /></div>;
   return <AppCtx.Provider value={value}>{children}</AppCtx.Provider>;
 }

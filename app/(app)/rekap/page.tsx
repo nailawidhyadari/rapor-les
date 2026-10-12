@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useApp } from "@/components/Provider";
-import { Empty, Icon, PageHead, Persen, useToast } from "@/components/ui";
+import { Avatar, Empty, Icon, PageHead, Persen, useToast } from "@/components/ui";
 import { barisRekapKelas, barisRekapSiswa, eksporRekap } from "@/lib/exporter";
 import { formatBulan, fmtSkor, monthISO, namaKelas } from "@/lib/util";
 
@@ -43,9 +43,9 @@ export default function HalamanRekap() {
           </div>
           <div className="field">
             <label>Tampilan</label>
-            <div className="seg" role="group">
-              <button aria-pressed={tab === "siswa"} className="H" style={{ background: tab === "siswa" ? "var(--primary)" : undefined }} onClick={() => setTab("siswa")}>Per siswa</button>
-              <button aria-pressed={tab === "kelas"} className="H" style={{ background: tab === "kelas" ? "var(--primary)" : undefined }} onClick={() => setTab("kelas")}>Per kelas</button>
+            <div className="seg tab" role="group">
+              <button aria-pressed={tab === "siswa"} onClick={() => setTab("siswa")}>Per siswa</button>
+              <button aria-pressed={tab === "kelas"} onClick={() => setTab("kelas")}>Per kelas</button>
             </div>
           </div>
           {tab === "siswa" && (
@@ -67,7 +67,7 @@ export default function HalamanRekap() {
                 <tbody>
                   {rs.map(({ s, h, rata, predikat }) => (
                     <tr key={s.id}>
-                      <td className="nm nm-cell">{s.nama}<span className="sub">{s.kelasIds.map((i) => namaKelas(db, i)).filter((n) => n !== "-").join(", ")}</span></td>
+                      <td className="nm nm-cell"><div className="who"><Avatar nama={s.nama} /><div>{s.nama}<span className="sub">{s.kelasIds.map((i) => namaKelas(db, i)).filter((n) => n !== "-").join(", ")}</span></div></div></td>
                       <td data-label="Pertemuan" className="num">{h.total}</td>
                       <td data-label="Hadir" className="num">{h.H}</td>
                       <td data-label="Izin" className="num">{h.I}</td>

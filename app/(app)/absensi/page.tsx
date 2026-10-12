@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "@/components/Provider";
-import { Empty, Konfirmasi, PageHead, useToast } from "@/components/ui";
+import { Avatar, Empty, Konfirmasi, PageHead, useToast } from "@/components/ui";
 import type { StatusHadir } from "@/lib/types";
 import { STATUS_LABEL, formatTanggal, todayISO, uid } from "@/lib/util";
 
@@ -99,7 +99,7 @@ export default function HalamanAbsensi() {
               <ul className="list-plain">
                 {anggota.map((s) => (
                   <li key={s.id} style={{ flexWrap: "wrap" }}>
-                    <strong>{s.nama}</strong>
+                    <div className="who"><Avatar nama={s.nama} /><strong>{s.nama}</strong></div>
                     <div className="seg" role="group" aria-label={`Kehadiran ${s.nama}`}>
                       {OPSI.map((o) => (
                         <button key={o} className={o} aria-pressed={rec[s.id] === o} title={STATUS_LABEL[o]} onClick={() => setRec({ ...rec, [s.id]: o })}>{o}</button>

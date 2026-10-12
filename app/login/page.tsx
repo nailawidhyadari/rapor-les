@@ -84,12 +84,12 @@ export default function Login() {
 
   const brand = (
     <div className="brand" style={{ padding: "0 0 18px" }}>
-      <div className="brand-mark" style={{ background: "var(--primary)", color: "var(--primary-ink)" }} aria-hidden="true">
+      <div className="brand-mark" aria-hidden="true">
         {db.lembaga.nama.charAt(0).toUpperCase()}
       </div>
       <div>
-        <div className="brand-name" style={{ color: "var(--ink)" }}>{db.lembaga.nama}</div>
-        <div className="brand-sub" style={{ color: "var(--muted)" }}>Sistem Rapor Les</div>
+        <div className="brand-name" >{db.lembaga.nama}</div>
+        <div className="brand-sub" >Sistem Rapor Les</div>
       </div>
     </div>
   );
@@ -126,14 +126,14 @@ export default function Login() {
             <p className="muted small" style={{ marginBottom: 16 }}>Pilih peran untuk masuk. Data yang tampil adalah data contoh.</p>
             <div className="stack-y">
               {AKUN_DEMO.map((a) => (
-                <div key={a.username} style={{ border: "1px solid var(--line)", borderRadius: "var(--radius)", padding: 14 }}>
+                <div key={a.username} className="akun-demo">
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "baseline" }}>
                     <strong>{a.peran}</strong>
                     <span className="small muted">{a.deskripsi}</span>
                   </div>
-                  <dl style={{ display: "grid", gridTemplateColumns: "auto 1fr", gap: "2px 12px", margin: "10px 0 12px", fontSize: 14 }}>
-                    <dt className="muted">Nama pengguna</dt><dd style={{ margin: 0, fontFamily: "ui-monospace, Menlo, monospace" }}>{a.username}</dd>
-                    <dt className="muted">Kata sandi</dt><dd style={{ margin: 0, fontFamily: "ui-monospace, Menlo, monospace" }}>{a.password}</dd>
+                  <dl>
+                    <dt className="muted">Nama pengguna</dt><dd>{a.username}</dd>
+                    <dt className="muted">Kata sandi</dt><dd>{a.password}</dd>
                   </dl>
                   <button className="btn primary" style={{ width: "100%", minHeight: 42 }} disabled={sibuk} onClick={() => masukDemo(a)}>
                     {sibuk ? "Memproses..." : `Masuk sebagai ${a.peran}`}

@@ -19,6 +19,16 @@ const PATHS: Record<string, string> = {
   send: "M21 3L10 14M21 3l-7 18-4-7-7-4 18-7z",
   trash: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3",
   logout: "M10 4H5v16h5M15 8l4 4-4 4M19 12H9",
+  calendar: "M4 6h16v14H4V6zM4 10h16M8 3v4M16 3v4",
+  chart: "M4 20V10M10 20V4M16 20v-8M22 20H2",
+  award: "M12 14a6 6 0 100-12 6 6 0 000 12zM8.5 13.5L7 22l5-3 5 3-1.5-8.5",
+  clock: "M12 21a9 9 0 100-18 9 9 0 000 18zM12 7v5l3 2",
+  search: "M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.3-4.3",
+  shield: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4",
+  phone: "M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z",
+  trend: "M3 17l6-6 4 4 8-8M15 7h6v6",
+  bell: "M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8zM10 21h4",
+  tick: "M5 12l4.5 4.5L19 7",
 };
 
 export function Icon({ name }: { name: keyof typeof PATHS | string }) {
@@ -132,5 +142,114 @@ export function Konfirmasi({
     >
       <p>{teks}</p>
     </Modal>
+  );
+}
+
+const WARNA_AVATAR = [
+  ["#e8eeff", "#2358f4"], ["#fef3d6", "#b7791f"], ["#dcf6f1", "#0b7d6e"],
+  ["#fde9ea", "#c23338"], ["#def3fd", "#0a74a8"], ["#efe6ff", "#6b3fc4"],
+];
+
+export function Avatar({ nama, kecil }: { nama: string; kecil?: boolean }) {
+  const huruf = nama.replace(/[^\p{L}\s]/gu, "").trim().split(/\s+/).slice(0, 2).map((x) => x[0]).join("").toUpperCase();
+  let h = 0;
+  for (const c of nama) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  const [bg, ink] = WARNA_AVATAR[h % WARNA_AVATAR.length];
+  return (
+    <span className={`avatar${kecil ? " sm" : ""}`} style={{ ["--av-bg" as string]: bg, ["--av-ink" as string]: ink }} aria-hidden="true">
+      {huruf || "?"}
+    </span>
+  );
+}
+
+/** Angka yang berhitung naik saat tampil. */
+export function AngkaHitung({ nilai, desimal = 0, akhiran = "" }: { nilai: number | null; desimal?: number; akhiran?: string }) {
+  const [tampil, setTampil] = useState(0);
+  useEffect(() => {
+    if (nilai === null) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setTampil(nilai);
+    let raf = 0;
+    const mulai = performance.now();
+    const durasi = 900;
+    const langkah = (t: number) => {
+      const p = Math.min(1, (t - mulai) / durasi);
+      setTampil(nilai * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) raf = requestAnimationFrame(langkah);
+    };
+    raf = requestAnimationFrame(langkah);
+    return () => cancelAnimationFrame(raf);
+  }, [nilai]);
+  if (nilai === null) return <>-</>;
+  return <>{tampil.toFixed(desimal).replace(".", ",")}{akhiran}</>;
+}
+
+export function GrafikBatang({ data }: { data: { label: string; nilai: number; detail: string }[] }) {
+  const [aktif, setAktif] = useState<number | null>(null);
+  return (
+    <div className="chart">
+      <div className="chart-bars" onMouseLeave={() => setAktif(null)}>
+        {data.map((d, i) => (
+          <div
+            key={i}
+            className={`chart-col${aktif === i ? " on" : ""}`}
+            style={{ ["--h" as string]: `${d.nilai * 1.9}px` }}
+            onMouseEnter={() => setAktif(i)}
+            onClick={() => setAktif(aktif === i ? null : i)}
+            title={`${d.label}: ${d.detail}`}
+          >
+            <span style={{ height: `${Math.max(d.nilai, 3)}%`, animationDelay: `${i * 60}ms` }} />
+            <div className="tip"><b>{d.nilai.toFixed(0)}%</b> {d.detail}</div>
+          </div>
+        ))}
+      </div>
+      <div className="chart-labels">{data.map((d, i) => <span key={i}>{d.label}</span>)}</div>
+    </div>
+  );
+}
+
+export function Donat({
+  bagian, tengah, label,
+}: { bagian: { nama: string; nilai: number; warna: string }[]; tengah: string; label: string }) {
+  const total = bagian.reduce((a, b) => a + b.nilai, 0);
+  const R = 58;
+  const K = 2 * Math.PI * R;
+  let offset = 0;
+  return (
+    <div className="donut-wrap">
+      <div className="donut">
+        <svg viewBox="0 0 150 150" role="img" aria-label={label}>
+          <circle className="trk" cx="75" cy="75" r={R} />
+          {total > 0 && bagian.filter((b) => b.nilai > 0).map((b, i) => {
+            const len = Math.max((b.nilai / total) * K - 4, 1);
+            const el = (
+              <circle key={b.nama} className="seg-arc" cx="75" cy="75" r={R} stroke={b.warna}
+                style={{ ["--len" as string]: len, strokeDashoffset: -offset, animationDelay: `${i * 120}ms` }}>
+                <title>{`${b.nama}: ${b.nilai}`}</title>
+              </circle>
+            );
+            offset += (b.nilai / total) * K;
+            return el;
+          })}
+        </svg>
+        <div className="tengah"><b>{tengah}</b><span>{label}</span></div>
+      </div>
+      <div className="legend">
+        {bagian.map((b) => (
+          <div key={b.nama}><i style={{ background: b.warna }} />{b.nama}<b>{b.nilai}</b></div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function Kerangka({ baris = 4 }: { baris?: number }) {
+  return (
+    <div style={{ display: "grid", gap: 14 }}>
+      <div className="skel" style={{ height: 34, width: "40%" }} />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 16 }}>
+        {Array.from({ length: 4 }).map((_, i) => <div key={i} className="skel" style={{ height: 130, borderRadius: 16 }} />)}
+      </div>
+      {Array.from({ length: baris }).map((_, i) => <div key={i} className="skel" style={{ height: 52 }} />)}
+    </div>
   );
 }

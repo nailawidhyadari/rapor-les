@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "@/components/Provider";
-import { Empty, Konfirmasi, PageHead, useToast } from "@/components/ui";
+import { Avatar, Empty, Konfirmasi, PageHead, useToast } from "@/components/ui";
 import type { JenisNilai, Nilai } from "@/lib/types";
 import { formatTanggal, todayISO, uid } from "@/lib/util";
 
@@ -118,7 +118,7 @@ export default function HalamanNilai() {
                     const b = baris[s.id] ?? { skor: "", catatan: "" };
                     return (
                       <tr key={s.id}>
-                        <td className="nm nm-cell">{s.nama}</td>
+                        <td className="nm nm-cell"><div className="who"><Avatar nama={s.nama} kecil />{s.nama}</div></td>
                         <td data-label="Nilai">
                           <input
                             className="input" inputMode="decimal" aria-label={`Nilai ${s.nama}`}

@@ -1,18 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans, Source_Serif_4 } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const body = IBM_Plex_Sans({
+const body = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--f-body",
-  display: "swap",
-});
-
-const head = Source_Serif_4({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
-  variable: "--f-head",
   display: "swap",
 });
 
@@ -32,7 +25,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="id" className={`${body.variable} ${head.variable}`}>
+    <html lang="id" className={body.variable}>
       <body>{children}</body>
     </html>
   );

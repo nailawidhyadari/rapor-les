@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useApp } from "@/components/Provider";
-import { Empty, Field, Icon, Konfirmasi, Modal, PageHead, useToast } from "@/components/ui";
+import { Avatar, Empty, Field, Icon, Konfirmasi, Modal, PageHead, useToast } from "@/components/ui";
 import type { Tutor } from "@/lib/types";
 
 interface Form extends Tutor {
@@ -82,7 +82,7 @@ export default function HalamanPengajar() {
               <tbody>
                 {db.tutors.map((t) => (
                   <tr key={t.id}>
-                    <td className="nm nm-cell">{t.nama}{!t.aktif && <span className="sub">Nonaktif</span>}</td>
+                    <td className="nm nm-cell"><div className="who"><Avatar nama={t.nama} /><div>{t.nama}{!t.aktif && <span className="sub">Nonaktif</span>}</div></div></td>
                     <td data-label="Mata pelajaran">{t.mapel || "-"}</td>
                     <td data-label="Telepon">{t.telepon || "-"}</td>
                     <td data-label="Akun">{db.users.find((u) => u.tutorId === t.id)?.username ?? <span className="muted">belum ada</span>}</td>

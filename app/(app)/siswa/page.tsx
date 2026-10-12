@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useApp } from "@/components/Provider";
-import { Empty, Field, Icon, Konfirmasi, Modal, PageHead } from "@/components/ui";
+import { Avatar, Empty, Field, Icon, Konfirmasi, Modal, PageHead } from "@/components/ui";
 import type { Jenjang, Siswa } from "@/lib/types";
 import { namaKelas, uid } from "@/lib/util";
 
@@ -85,7 +85,7 @@ export default function HalamanSiswa() {
               <tbody>
                 {daftar.map((s) => (
                   <tr key={s.id}>
-                    <td className="nm nm-cell">{s.nama}<span className="sub">{s.jenjang}</span></td>
+                    <td className="nm nm-cell"><div className="who"><Avatar nama={s.nama} /><div>{s.nama}<span className="sub">{s.jenjang}</span></div></div></td>
                     <td data-label="Sekolah">{s.sekolah || "-"}</td>
                     <td data-label="Kelas">{s.kelasIds.map((id) => namaKelas(db, id)).filter((n) => n !== "-").join(", ") || "-"}</td>
                     <td data-label="Orang tua"><span>{s.namaOrtu || "-"}<span className="sub">{s.waOrtu}</span></span></td>
